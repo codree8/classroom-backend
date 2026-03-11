@@ -13,8 +13,8 @@ router.get("/", async (require, res) => {
     const currentPage = Math.max(1, parseInt(String(page), 10) || 1);
     const limitPerPage = Math.max(
       Math.max(1, parseInt(String(limit), 10) || 10),
-      100,
-    ); // max 100 records per page
+      10,
+    ); // max 100/10? records per page
 
     const offset = (currentPage - 1) * limitPerPage;
 

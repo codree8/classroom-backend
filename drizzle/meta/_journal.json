@@ -8,6 +8,13 @@
       "when": 1773160921636,
       "tag": "0000_peaceful_hex",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1773258636413,
+      "tag": "0001_marvelous_starbolt",
+      "breakpoints": true
     }
   ]
 }
