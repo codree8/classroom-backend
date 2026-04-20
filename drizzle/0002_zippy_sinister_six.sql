@@ -28,6 +28,7 @@ CREATE TABLE "session_materials" (
 ALTER TABLE "user" ADD COLUMN "department_id" integer;--> statement-breakpoint
 ALTER TABLE "class_sessions" ADD CONSTRAINT "class_sessions_class_id_classes_id_fk" FOREIGN KEY ("class_id") REFERENCES "public"."classes"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "session_materials" ADD CONSTRAINT "session_materials_session_id_class_sessions_id_fk" FOREIGN KEY ("session_id") REFERENCES "public"."class_sessions"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "user" ADD CONSTRAINT "user_department_id_departments_id_fk" FOREIGN KEY ("department_id") REFERENCES "public"."departments"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "idx_class_sessions_class_id" ON "class_sessions" USING btree ("class_id");--> statement-breakpoint
 CREATE INDEX "idx_class_sessions_start_at" ON "class_sessions" USING btree ("start_at");--> statement-breakpoint
 CREATE INDEX "idx_session_materials_session_id" ON "session_materials" USING btree ("session_id");--> statement-breakpoint
