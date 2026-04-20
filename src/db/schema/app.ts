@@ -93,6 +93,55 @@ export const enrollments = pgTable(
   ],
 );
 
+export const classSessions = pgTable(
+  "class_sessions",
+  {
+    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+    classId: integer("class_id")
+      .notNull()
+      .references(() => classes.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    description: text("description"),
+    startAt: timestamp("start_at", { withTimezone: true }).notNull(),
+    endAt: timestamp("end_at", { withTimezone: true }).notNull(),
+    meetUrl: text("meet_url"),
+    recordingUrl: text("recording_url"),
+    status: text("status")
+      .$type<"scheduled" | "live" | "completed" | "cancelled">()
+      .default("scheduled")
+      .notNull(),
+    ...timestamps,
+  },
+  (table) => [
+    index("idx_class_sessions_class_id").on(table.classId),
+    index("idx_class_sessions_start_at").on(table.startAt),
+  ],
+);
+
+export const sessionMaterials = pgTable(
+  "session_materials",
+  {
+    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+    sessionId: integer("session_id")
+      .notNull()
+      .references(() => classSessions.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    description: text("description"),
+    type: text("type")
+      .$type<"pdf" | "doc" | "ppt" | "link" | "video" | "other">()
+      .default("other")
+      .notNull(),
+    url: text("url").notNull(),
+    filePublicId: text("file_public_id"),
+    position: integer("position").default(0).notNull(),
+    ...timestamps,
+  },
+  (table) => [
+    index("idx_session_materials_session_id").on(table.sessionId),
+    index("idx_session_materials_position").on(table.position),
+  ],
+);
+
 export const departmentRelations = relations(departments, ({ many }) => ({
   subjects: many(subjects),
 }));
@@ -115,6 +164,7 @@ export const classesRelations = relations(classes, ({ one, many }) => ({
     references: [user.id],
   }),
   enrollments: many(enrollments),
+  sessions: many(classSessions),
 }));
 
 export const enrollmentsRelations = relations(enrollments, ({ one }) => ({
@@ -128,6 +178,27 @@ export const enrollmentsRelations = relations(enrollments, ({ one }) => ({
   }),
 }));
 
+export const classSessionsRelations = relations(
+  classSessions,
+  ({ one, many }) => ({
+    class: one(classes, {
+      fields: [classSessions.classId],
+      references: [classes.id],
+    }),
+    materials: many(sessionMaterials),
+  }),
+);
+
+export const sessionMaterialsRelations = relations(
+  sessionMaterials,
+  ({ one }) => ({
+    session: one(classSessions, {
+      fields: [sessionMaterials.sessionId],
+      references: [classSessions.id],
+    }),
+  }),
+);
+
 export type Department = typeof departments.$inferSelect;
 export type NewDepartment = typeof departments.$inferInsert;
 
@@ -139,3 +210,9 @@ export type NewClass = typeof classes.$inferInsert;
 
 export type Enrollment = typeof enrollments.$inferSelect;
 export type NewEnrollment = typeof enrollments.$inferInsert;
+
+export type ClassSession = typeof classSessions.$inferSelect;
+export type NewClassSession = typeof classSessions.$inferInsert;
+
+export type SessionMaterial = typeof sessionMaterials.$inferSelect;
+export type NewSessionMaterial = typeof sessionMaterials.$inferInsert;

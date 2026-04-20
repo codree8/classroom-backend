@@ -5,6 +5,7 @@ import {
   boolean,
   pgEnum,
   index,
+  integer,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
@@ -18,16 +19,21 @@ const timestamps = {
     .notNull(),
 };
 
-export const user = pgTable("user", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  email: text("email").notNull().unique(),
-  emailVerified: boolean("email_verified").notNull(),
-  image: text("image"),
-  role: roleEnum("role").default("student").notNull(),
-  imageCldPubId: text("image_cld_pub_id"),
-  ...timestamps,
-});
+export const user = pgTable(
+  "user",
+  {
+    id: text("id").primaryKey(),
+    name: text("name").notNull(),
+    email: text("email").notNull().unique(),
+    emailVerified: boolean("email_verified").notNull(),
+    image: text("image"),
+    role: roleEnum("role").default("student").notNull(),
+    imageCldPubId: text("image_cld_pub_id"),
+    departmentId: integer("department_id"),
+    ...timestamps,
+  },
+  (table) => [index("idx_user_department_id").on(table.departmentId)],
+);
 
 export const session = pgTable(
   "session",
