@@ -6,6 +6,8 @@ import classesRouter from "./routes/classes.js";
 import departmentsRouter from "./routes/departments.js";
 import statsRouter from "./routes/stats.js";
 import enrollmentsRouter from "./routes/enrollments.js";
+import classSessionsRouter from "./routes/class-sessions.js";
+import sessionMaterialsRouter from "./routes/session-materials.js";
 
 import cors from "cors";
 import securityMiddleware from "./middleware/security.js";
@@ -38,6 +40,8 @@ app.use("/api/classes", classesRouter);
 app.use("/api/departments", departmentsRouter);
 app.use("/api/stats", statsRouter);
 app.use("/api/enrollments", enrollmentsRouter);
+app.use("/api/class-sessions", classSessionsRouter);
+app.use("/api/session-materials", sessionMaterialsRouter);
 
 app.get("/", (req, res) => {
   res.send("Backend server is running!");
